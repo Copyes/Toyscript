@@ -26,7 +26,6 @@ export default class Frankxx {
   _replaceFun(str, data) {
     return str.replace(/\{\{([^{}]*)\}\}/g, (a, b) => {
       let r = this._getObjProp(data, b)
-      console.log(a, b, r)
       if (typeof r === 'string' || typeof r === 'number') {
         return r
       } else {
@@ -35,7 +34,6 @@ export default class Frankxx {
     })
   }
   _getObjProp(obj, propName) {
-    console.log(propName)
     let propsArr = propName.split('.')
     function rec(o, pName) {
       if (!o[pName] instanceof Array && o[pName] instanceof Object) {

@@ -1,4 +1,4 @@
-import Frankxx from './frankxx'
+import Frankxx from './frankxx/frankxx'
 
 let template = document.querySelector('#app').innerHTML
 
