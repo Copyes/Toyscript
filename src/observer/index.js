@@ -94,6 +94,26 @@ export function defineReactive(obj, key, val) {
       }
       return value
     },
-    set: function reactiveSetter() {}
+    set: function reactiveSetter(newVal) {
+      const value = getter ? getter.call(obj) : val
+      if (newVal === value || (newVal !== newVal && value !== value)) return
+      if (setter) {
+        setter.call(obj, newVal)
+      } else {
+        val = newVal
+      }
+      childOb = observe(newVal)
+      dep.notify()
+    }
   })
+}
+
+export function dependArray(value) {
+  for (let e, i = 0, l = value.length; i < l; ++i) {
+    e = value[i]
+    e && e.__ob__ && e.__ob__.dep.depend()
+    if (Array.isArray(e)) {
+      dependArray(e)
+    }
+  }
 }
