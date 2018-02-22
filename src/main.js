@@ -1,7 +1,7 @@
 import Observer from './observer/index'
-import Vue from './instance'
+import Frankxx from './instance'
 
-const v = new Vue({
+const v = new Frankxx({
   data: {
     a: 1,
     b: {
@@ -10,8 +10,9 @@ const v = new Vue({
   }
 })
 
-v.$watch('a', () => console.log('哈哈'))
-
+v.$watch('a', () => console.log('a改变了'))
+v.$watch('b.c', () => console.log('c 改变了'))
+v.b.c = 1
 setTimeout(() => {
   v.a = 4
 }, 1000)
@@ -19,5 +20,3 @@ setTimeout(() => {
 setTimeout(() => {
   v.a = 5
 }, 2000)
-
-console.log(v._data)

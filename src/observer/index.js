@@ -7,8 +7,8 @@ export const hasProto = '__proto__' in {}
 export class Observer {
   constructor(value) {
     this.value = value
-    this.dep = new Dep()
-    this.vmCount = 0
+    // this.dep = new Dep()
+    // this.vmCount = 0
     def(value, '__ob__', this)
     if (Array.isArray(value)) {
       const augment = hasProto ? protoAugment : copyAugment
@@ -59,9 +59,9 @@ export function observe(value) {
     ob = value.__ob__
   } else if (
     (Array.isArray(value) || isPlainObject(value)) &&
-    Object.isExtensible(value) &&
-    !value._isVue
+    Object.isExtensible(value)
   ) {
+    console.log(value)
     ob = new Observer(value)
   }
 
@@ -70,38 +70,42 @@ export function observe(value) {
 
 export function defineReactive(obj, key, val) {
   const dep = new Dep()
-  const property = Object.getOwnPropertyDescriptor(obj, key)
+  // const property = Object.getOwnPropertyDescriptor(obj, key)
+  // if (property && property.configurable === false) return
 
-  if (property && property.configurable === false) return
-
-  const setter = property && property.set
-  const getter = property && property.get
+  // const setter = property && property.set
+  // const getter = property && property.get
 
   let childOb = observe(val)
+  console.log(childOb)
   Object.defineProperty(obj, key, {
     enumerable: true,
     configurable: true,
     get: function reactiveGetter() {
-      const value = getter ? getter.call(obj) : val
+      // const value = getter ? getter.call(obj) : val
+      const value = val
       if (Dep.target) {
         dep.depend()
-        if (childOb) {
-          childOb.dep.depend()
-          if (Array.isArray(value)) {
-            dependArray(value)
-          }
-        }
+        // if (childOb) {
+        //   console.log(childOb)
+        //   childOb.dep.depend()
+        //   if (Array.isArray(value)) {
+        //     dependArray(value)
+        //   }
+        // }
       }
       return value
     },
     set: function reactiveSetter(newVal) {
-      const value = getter ? getter.call(obj) : val
+      // const value = getter ? getter.call(obj) : val
+      const value = val
       if (newVal === value || (newVal !== newVal && value !== value)) return
-      if (setter) {
-        setter.call(obj, newVal)
-      } else {
-        val = newVal
-      }
+      // if (setter) {
+      //   setter.call(obj, newVal)
+      // } else {
+      //   val = newVal
+      // }
+      val = newVal
       childOb = observe(newVal)
       dep.notify()
     }

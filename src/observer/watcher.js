@@ -29,9 +29,10 @@ export default class Watcher {
     pushTarget(this)
     let value
     const vm = this.vm
+
     value = this.getter.call(vm, vm)
     popTarget()
-    this.cleanupDeps()
+    // this.cleanupDeps()
     return value
   }
   addDep(dep) {
