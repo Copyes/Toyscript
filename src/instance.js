@@ -1,5 +1,5 @@
-import Watcher from './watcher'
-import { observe } from './index'
+import Watcher from './observer/watcher'
+import { observe } from './observer/index'
 
 export default class Frankxx {
   constructor(options = {}) {

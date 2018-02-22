@@ -5,7 +5,7 @@ let uid = 0
 export default class Watcher {
   constructor(vm, expOrFn, cb, options) {
     this.vm = vm
-    vm._watchers.push(this)
+    // vm._watchers.push(this)
     this.cb = cb
     this.id = uid++
     this.expression = ''

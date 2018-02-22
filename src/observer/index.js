@@ -1,6 +1,6 @@
 import { arrayMethods } from './array'
-import { def, hasOwn, isObject, isPlainObject } from './dep'
-
+import { def, hasOwn, isObject, isPlainObject } from './utils'
+import Dep from './dep'
 const arrayKeys = Object.getOwnPropertyNames(arrayMethods)
 // can we use __proto__?
 export const hasProto = '__proto__' in {}
@@ -84,7 +84,7 @@ export function defineReactive(obj, key, val) {
     get: function reactiveGetter() {
       const value = getter ? getter.call(obj) : val
       if (Dep.target) {
-        Dep.depend()
+        dep.depend()
         if (childOb) {
           childOb.dep.depend()
           if (Array.isArray(value)) {

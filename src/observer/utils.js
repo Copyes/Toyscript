@@ -14,7 +14,7 @@ export function hasOwn(obj, key) {
   return hasOwnProperty.call(obj, key)
 }
 
-export function isObject(val) {
+export function isObject(obj) {
   return obj !== null && typeof obj === 'object'
 }
 
