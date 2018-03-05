@@ -121,7 +121,7 @@ export default class Watcher {
       this.deep = this.user = this.lazy = this.sync = false
     }
     this.cb = cb
-    this.id = ++wuid
+    this.id = ++uid
     this.active = true
     this.dirty = this.lazy
     this.deps = []
@@ -143,6 +143,7 @@ export default class Watcher {
     const vm = this.vm
     try {
       value = this.getter.call(vm, vm)
+      console.log(vm._data.a)
     } catch (e) {
       console.log(e)
     } finally {
@@ -161,8 +162,8 @@ export default class Watcher {
   }
   addDep(dep) {
     const id = dep.id
-    if (!this.newDepIds.has(id)) {
-      this.newDepIds.add(id)
+    if (!this.newDepsIds.has(id)) {
+      this.newDepsIds.add(id)
       this.newDeps.push(dep)
       if (!this.depIds.has(id)) {
         dep.addSub(this)

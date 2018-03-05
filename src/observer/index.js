@@ -7,10 +7,11 @@ export const hasProto = '__proto__' in {}
 export class Observer {
   constructor(value) {
     this.value = value
-    // this.dep = new Dep()
-    // this.vmCount = 0
+    this.dep = new Dep()
+    this.vmCount = 0
     def(value, '__ob__', this)
     if (Array.isArray(value)) {
+      // 对数组原型上的方法拷贝
       const augment = hasProto ? protoAugment : copyAugment
       augment(value, arrayMethods, arrayKeys)
       this.observeArray(value)
@@ -53,7 +54,7 @@ function copyAugment(target, src, keys) {
   }
 }
 
-export function observe(value) {
+export function observe(value, asRootData) {
   if (!isObject(value)) return
   let ob
   if (hasOwn(value, '__ob__') && value.__ob__ instanceof Observer) {
@@ -65,27 +66,28 @@ export function observe(value) {
     console.log(value)
     ob = new Observer(value)
   }
-
+  if (asRootData && ob) {
+    ob.vmCount++
+  }
   return ob
 }
 
-export function defineReactive(obj, key, val) {
+export function defineReactive(obj, key, val, customSetter, shallow) {
   const dep = new Dep()
-  // const property = Object.getOwnPropertyDescriptor(obj, key)
-  // if (property && property.configurable === false) return
+  const property = Object.getOwnPropertyDescriptor(obj, key)
+  if (property && property.configurable === false) return
 
-  // const setter = property && property.set
-  // const getter = property && property.get
+  const setter = property && property.set
+  const getter = property && property.get
 
-  let childOb = observe(val)
-  console.log(childOb)
+  let childOb = !shallow && observe(val)
   Object.defineProperty(obj, key, {
     enumerable: true,
     configurable: true,
     get: function reactiveGetter() {
       const value = getter ? getter.call(obj) : val
-      const value = val
       if (Dep.target) {
+        console.log('get操作')
         dep.depend()
         if (childOb) {
           console.log(childOb)
@@ -101,11 +103,14 @@ export function defineReactive(obj, key, val) {
       // const value = getter ? getter.call(obj) : val
       const value = val
       if (newVal === value || (newVal !== newVal && value !== value)) return
-      // if (setter) {
-      //   setter.call(obj, newVal)
-      // } else {
-      //   val = newVal
-      // }
+      if (customSetter) {
+        customSetter()
+      }
+      if (setter) {
+        setter.call(obj, newVal)
+      } else {
+        val = newVal
+      }
       val = newVal
       childOb = observe(newVal)
       dep.notify()

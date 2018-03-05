@@ -27,7 +27,7 @@ export default class Frankxx {
     if (typeof options.data === 'function') {
       this._data = data = options.data()
     } else {
-      this._data = data = option.data
+      this._data = data = options.data
     }
     const keys = Object.keys(data)
     let i = keys.length
@@ -38,11 +38,13 @@ export default class Frankxx {
     this.$mount()
   }
   $watch(expOrFn, cb, options) {
-    new Watcher(this, expOrFn, cb)
+    return new Watcher(this, expOrFn, cb)
   }
   $mount() {
     let vm = this
-    let updateComponent = function() {}
+    let updateComponent = function() {
+      console.log('这里会调用vm._update提示数据变化,告诉vue该渲染了')
+    }
     vm._watchers = []
     new Watcher(vm, updateComponent, function() {}, null, true)
   }
