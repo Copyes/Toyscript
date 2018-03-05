@@ -52,6 +52,7 @@ function copyAugment(target, src, keys) {
     def(target, key, src[key])
   }
 }
+
 export function observe(value) {
   if (!isObject(value)) return
   let ob
@@ -82,17 +83,17 @@ export function defineReactive(obj, key, val) {
     enumerable: true,
     configurable: true,
     get: function reactiveGetter() {
-      // const value = getter ? getter.call(obj) : val
+      const value = getter ? getter.call(obj) : val
       const value = val
       if (Dep.target) {
         dep.depend()
-        // if (childOb) {
-        //   console.log(childOb)
-        //   childOb.dep.depend()
-        //   if (Array.isArray(value)) {
-        //     dependArray(value)
-        //   }
-        // }
+        if (childOb) {
+          console.log(childOb)
+          childOb.dep.depend()
+          if (Array.isArray(value)) {
+            dependArray(value)
+          }
+        }
       }
       return value
     },
