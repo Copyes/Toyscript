@@ -133,7 +133,11 @@ export default class Watcher {
     if (typeof expOrFn === 'function') {
       this.getter = expOrFn
     } else {
-      this.getter = function() {} // todo
+      this.getter = parsePath(expOrFn)
+      console.log(this.getter)
+      if (!this.getter) {
+        this.getter = function() {} // todo
+      }
     }
     this.value = this.lazy ? undefined : this.get()
   }
@@ -143,7 +147,7 @@ export default class Watcher {
     const vm = this.vm
     try {
       value = this.getter.call(vm, vm)
-      console.log(vm._data.a)
+      console.log(value)
     } catch (e) {
       console.log(e)
     } finally {
@@ -174,14 +178,14 @@ export default class Watcher {
     let i = this.deps.length
     while (i--) {
       const dep = this.deps[i]
-      if (!this.newDepIds.has(dep.id)) {
+      if (!this.newDepsIds.has(dep.id)) {
         dep.removeSub(this)
       }
     }
     let tmp = this.depIds
-    this.depIds = this.newDepIds
-    this.newDepIds = tmp
-    this.newDepIds.clear()
+    this.depIds = this.newDepsIds
+    this.newDepsIds = tmp
+    this.newDepsIds.clear()
     tmp = this.deps
     this.deps = this.newDeps
     this.newDeps = tmp
@@ -200,8 +204,9 @@ export default class Watcher {
   run() {
     const value = this.get()
     if (value !== this.value) {
+      const oldValue = this.value
       this.value = value
-      this.cb.call(this.vm)
+      this.cb.call(this.vm, value, oldValue)
     }
   }
   /**

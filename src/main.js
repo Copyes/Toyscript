@@ -10,12 +10,8 @@ const v = new Frankxx({
   }
 })
 
-// v.$watch('a', () => console.log('a改变了'))
-// v.$watch('b.c', () => console.log('c 改变了'))
 setTimeout(() => {
   v.a = 4
 }, 1000)
 
-setTimeout(() => {
-  v.a = 5
-}, 2000)
+v.$watch('a', () => console.log('a改变了'))

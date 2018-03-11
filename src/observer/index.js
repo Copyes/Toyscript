@@ -63,7 +63,6 @@ export function observe(value, asRootData) {
     (Array.isArray(value) || isPlainObject(value)) &&
     Object.isExtensible(value)
   ) {
-    console.log(value)
     ob = new Observer(value)
   }
   if (asRootData && ob) {
@@ -90,7 +89,6 @@ export function defineReactive(obj, key, val, customSetter, shallow) {
         console.log('get操作')
         dep.depend()
         if (childOb) {
-          console.log(childOb)
           childOb.dep.depend()
           if (Array.isArray(value)) {
             dependArray(value)
@@ -100,8 +98,8 @@ export function defineReactive(obj, key, val, customSetter, shallow) {
       return value
     },
     set: function reactiveSetter(newVal) {
-      // const value = getter ? getter.call(obj) : val
-      const value = val
+      const value = getter ? getter.call(obj) : val
+      // const value = val
       if (newVal === value || (newVal !== newVal && value !== value)) return
       if (customSetter) {
         customSetter()
@@ -111,7 +109,6 @@ export function defineReactive(obj, key, val, customSetter, shallow) {
       } else {
         val = newVal
       }
-      val = newVal
       childOb = observe(newVal)
       dep.notify()
     }
